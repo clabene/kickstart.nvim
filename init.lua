@@ -643,6 +643,23 @@ require('lazy').setup({
             },
           },
         },
+
+        -- Vue 3
+        volar = {},
+
+        -- TypeScript
+        ts_ls = {
+          filetypes = { 'typescript', 'javascript', 'javascriptreact', 'typescriptreact', 'vue' },
+          init_options = {
+            plugins = {
+              {
+                name = '@vue/typescript-plugin',
+                location = vim.fn.stdpath 'data' .. '/mason/packages/vue-language-server/node_modules/@vue/language-server',
+                languages = { 'vue' },
+              },
+            },
+          },
+        },
       }
 
       -- Ensure the servers and tools above are installed
