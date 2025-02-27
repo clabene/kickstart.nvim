@@ -166,10 +166,6 @@ vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 -- Diagnostic keymaps
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
 vim.keymap.set('n', 'Q', vim.diagnostic.open_float)
---[[
-  TODO dd shortcut to this command, showing full diagnostica messages vim.diagnostic.open_float
-]]
---
 
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
 -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
@@ -441,6 +437,11 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>sn', function()
         builtin.find_files { cwd = vim.fn.stdpath 'config' }
       end, { desc = '[S]earch [N]eovim files' })
+
+      -- Shortcut for searching all files
+      vim.keymap.set('n', '<leader>sa', function()
+        builtin.find_files { hidden = true }
+      end, { desc = '[S]earch [A]ll files (includes hidden)' })
     end,
   },
 
@@ -688,6 +689,11 @@ require('lazy').setup({
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
       require('mason-lspconfig').setup {
+        -- added for warning message
+        ensure_installed = {},
+        -- added for warning message
+        automatic_installation = true,
+
         handlers = {
           function(server_name)
             local server = servers[server_name] or {}
