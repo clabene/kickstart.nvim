@@ -146,6 +146,7 @@ vim.opt.splitbelow = true
 --  and `:help 'listchars'`
 vim.opt.list = true
 vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
+vim.opt.fillchars:remove 'eob' -- or set to vim.opt.fillchars = {}
 
 -- Preview substitutions live, as you type!
 vim.opt.inccommand = 'split'
@@ -201,6 +202,16 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   group = vim.api.nvim_create_augroup('kickstart-highlight-yank', { clear = true }),
   callback = function()
     vim.highlight.on_yank()
+  end,
+})
+
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = { 'javascript', 'typescript' },
+  callback = function()
+    vim.bo.shiftwidth = 2 -- Indentation size
+    vim.bo.tabstop = 2 -- Displayed width of a tab character
+    vim.bo.softtabstop = 2 -- How many spaces a <Tab> inserts in insert mode
+    vim.bo.expandtab = true -- Use spaces instead of tabs
   end,
 })
 
