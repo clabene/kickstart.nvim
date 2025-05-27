@@ -1023,6 +1023,22 @@ require('lazy').setup({
     end,
   },
 
+  -- Undo tree
+  {
+    'jiaoshijie/undotree',
+    dependencies = 'nvim-lua/plenary.nvim',
+    config = function()
+      require('undotree').setup {
+        window = {
+          winblend = 7, -- (0 = fully opaque)
+        },
+      }
+    end,
+    keys = {
+      { '<leader>u', "<cmd>lua require('undotree').toggle()<cr>" },
+    },
+  },
+
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.
   --
