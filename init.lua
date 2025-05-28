@@ -671,8 +671,9 @@ require('lazy').setup({
           },
         },
 
+        -- NOTE: disabled due to error on nvim startup
         -- Vue 3
-        volar = {},
+        -- volar = {},
 
         -- TypeScript
         ts_ls = {
