@@ -480,6 +480,11 @@ require('lazy').setup({
         },
       }
 
+      -- Disable regex in search
+      require('telescope.builtin').live_grep {
+        vimgrep_arguments = table.insert(require('telescope.config').values.vimgrep_arguments, '--fixed-strings'),
+      }
+
       -- Enable Telescope extensions if they are installed
       pcall(require('telescope').load_extension, 'fzf')
       pcall(require('telescope').load_extension, 'ui-select')
