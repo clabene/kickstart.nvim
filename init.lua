@@ -525,7 +525,8 @@ require('lazy').setup({
 
       -- Shortcut for searching all files
       vim.keymap.set('n', '<leader>sa', function()
-        builtin.find_files { hidden = true }
+        -- include hidden files and files in gitignore
+        builtin.find_files { hidden = true, no_ignore=true }
       end, { desc = '[S]earch [A]ll files (includes hidden)' })
     end,
   },
