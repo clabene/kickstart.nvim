@@ -309,13 +309,13 @@ require('lazy').setup({
 
         map('n', '<leader>hb', function()
           gitsigns.blame_line { full = true }
-        end, {desc = '[B]lame Line'})
+        end, { desc = '[B]lame Line' })
 
-        map('n', '<leader>hd', gitsigns.diffthis, {desc = '[D]iff this'})
+        map('n', '<leader>hd', gitsigns.diffthis, { desc = '[D]iff this' })
 
         map('n', '<leader>hD', function()
           gitsigns.diffthis '~'
-        end, {desc = '[D]iff this ~'})
+        end, { desc = '[D]iff this ~' })
 
         -- map('n', '<leader>hQ', function()
         --   gitsigns.setqflist 'all'
@@ -323,8 +323,8 @@ require('lazy').setup({
         -- map('n', '<leader>hq', gitsigns.setqflist)
 
         -- Toggles
-        map('n', '<leader>tb', gitsigns.toggle_current_line_blame, {desc = '[T]oggle current line [B]lame'})
-        map('n', '<leader>tw', gitsigns.toggle_word_diff, {desc = '[T]oggle [W]ord diff'})
+        map('n', '<leader>tb', gitsigns.toggle_current_line_blame, { desc = '[T]oggle current line [B]lame' })
+        map('n', '<leader>tw', gitsigns.toggle_word_diff, { desc = '[T]oggle [W]ord diff' })
 
         -- Text object
         -- map({ 'o', 'x' }, 'ih', gitsigns.select_hunk)
@@ -531,7 +531,7 @@ require('lazy').setup({
       -- Shortcut for searching all files
       vim.keymap.set('n', '<leader>sa', function()
         -- include hidden files and files in gitignore
-        builtin.find_files { hidden = true, no_ignore=true }
+        builtin.find_files { hidden = true, no_ignore = true }
       end, { desc = '[S]earch [A]ll files (includes hidden)' })
     end,
   },
@@ -1118,6 +1118,56 @@ require('lazy').setup({
     keys = {
       { '<leader>u', "<cmd>lua require('undotree').toggle()<cr>" },
     },
+  },
+
+  -- Fold utils
+  {
+    'kevinhwang91/nvim-ufo',
+    dependencies = {
+      'kevinhwang91/promise-async',
+    },
+    config = function()
+      -- Fold settings
+      vim.o.foldcolumn = '1'
+      vim.o.foldlevel = 99
+      vim.o.foldlevelstart = 99
+      vim.o.foldenable = true
+
+      -- Keymaps
+      vim.keymap.set('n', 'zR', require('ufo').openAllFolds, { desc = 'Open all folds' })
+      vim.keymap.set('n', 'zM', require('ufo').closeAllFolds, { desc = 'Close all folds' })
+      vim.keymap.set('n', 'zk', function ()
+        local winid = require('ufo').peekFoldedLinesUnderCursor()
+        if not winid then
+          vim.lsp.buf.hover()
+        end
+      end,  { desc = 'Pee[k] fold' })
+
+      -- Setup ufo
+      require('ufo').setup {
+        provider_selector = function(bufnr, filetype, buftype)
+          return { 'lsp', 'indent' } -- ✅ only two allowed
+        end,
+      }
+
+      -- Optional: Enhance LSP capabilities for folding
+      local capabilities = vim.lsp.protocol.make_client_capabilities()
+      capabilities.textDocument.foldingRange = {
+        dynamicRegistration = false,
+        lineFoldingOnly = true,
+      }
+
+      -- Update capabilities for existing servers (if already attached)
+      for _, client in pairs(vim.lsp.get_clients()) do
+        client.server_capabilities.textDocument = client.server_capabilities.textDocument or {}
+        client.server_capabilities.textDocument.foldingRange = capabilities.textDocument.foldingRange
+      end
+
+      -- If you are setting up LSP servers yourself via `lspconfig`, pass capabilities there:
+      -- require('lspconfig')['<your-lsp>'].setup {
+      --   capabilities = capabilities,
+      -- }
+    end,
   },
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
