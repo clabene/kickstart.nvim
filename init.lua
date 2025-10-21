@@ -1144,6 +1144,8 @@ require('lazy').setup({
       -- Keymaps
       vim.keymap.set('n', 'zR', require('ufo').openAllFolds, { desc = 'Open all folds' })
       vim.keymap.set('n', 'zM', require('ufo').closeAllFolds, { desc = 'Close all folds' })
+      vim.keymap.set('n', ']z', require('ufo').goNextClosedFold, { desc = 'Go to next closed fold' })
+      vim.keymap.set('n', '[z', require('ufo').goPreviousClosedFold, { desc = 'Go to previous closed fold' })
       vim.keymap.set('n', 'zk', function()
         local winid = require('ufo').peekFoldedLinesUnderCursor()
         if not winid then
