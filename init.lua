@@ -1032,6 +1032,7 @@ require('lazy').setup({
       --  Check out: https://github.com/echasnovski/mini.nvim
     end,
   },
+
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
@@ -1136,12 +1137,12 @@ require('lazy').setup({
       -- Keymaps
       vim.keymap.set('n', 'zR', require('ufo').openAllFolds, { desc = 'Open all folds' })
       vim.keymap.set('n', 'zM', require('ufo').closeAllFolds, { desc = 'Close all folds' })
-      vim.keymap.set('n', 'zk', function ()
+      vim.keymap.set('n', 'zk', function()
         local winid = require('ufo').peekFoldedLinesUnderCursor()
         if not winid then
           vim.lsp.buf.hover()
         end
-      end,  { desc = 'Pee[k] fold' })
+      end, { desc = 'Pee[k] fold' })
 
       -- Setup ufo
       require('ufo').setup {
@@ -1170,6 +1171,59 @@ require('lazy').setup({
     end,
   },
 
+    -- Flash, navigate by search quickly
+  {
+    'folke/flash.nvim',
+    event = 'VeryLazy',
+    opts = {},
+    config = function ()
+      vim.keymap.set('n', '<leader>ls', require('flash').jump, { desc = 'Flash Jump' })
+      vim.keymap.set('n', '<leader>lt', require('flash').treesitter, { desc = 'Flash Treesitter' })
+      vim.keymap.set('n', '<leader>lr', require('flash').treesitter_search, { desc = 'Flash Treesitter Search' })
+    end
+    -- keys = {
+    --   {
+    --     's',
+    --     mode = { 'n', 'x', 'o' },
+    --     function()
+    --       require('flash').jump()
+    --     end,
+    --     desc = 'Flash',
+    --   },
+    --   {
+    --     'S',
+    --     mode = { 'n', 'x', 'o' },
+    --     function()
+    --       require('flash').treesitter()
+    --     end,
+    --     desc = 'Flash Treesitter',
+    --   },
+    --   {
+    --     'r',
+    --     mode = 'o',
+    --     function()
+    --       require('flash').remote()
+    --     end,
+    --     desc = 'Remote Flash',
+    --   },
+    --   {
+    --     'R',
+    --     mode = { 'o', 'x' },
+    --     function()
+    --       require('flash').treesitter_search()
+    --     end,
+    --     desc = 'Treesitter Search',
+    --   },
+    --   {
+    --     '<c-s>',
+    --     mode = { 'c' },
+    --     function()
+    --       require('flash').toggle()
+    --     end,
+    --     desc = 'Toggle Flash Search',
+    --   },
+    -- },
+  },
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.
   --
