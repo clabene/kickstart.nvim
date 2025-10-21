@@ -481,9 +481,9 @@ require('lazy').setup({
       }
 
       -- Disable regex in search
-      require('telescope.builtin').live_grep {
-        vimgrep_arguments = table.insert(require('telescope.config').values.vimgrep_arguments, '--fixed-strings'),
-      }
+      -- require('telescope.builtin').live_grep {
+      --   vimgrep_arguments = table.insert(require('telescope.config').values.vimgrep_arguments, '--fixed-strings'),
+      -- }
 
       -- Enable Telescope extensions if they are installed
       pcall(require('telescope').load_extension, 'fzf')
@@ -499,7 +499,6 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>ss', builtin.builtin, { desc = '[S]earch [S]elect Telescope' })
       vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
       -- vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
-      vim.keymap.set('n', '<leader>sg', ":lua require('telescope').extensions.live_grep_args.live_grep_args()<CR>", { desc = '[S]earch by [G]rep' })
       vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
       vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
       vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
@@ -522,6 +521,14 @@ require('lazy').setup({
           prompt_title = 'Live Grep in Open Files',
         }
       end, { desc = '[S]earch [/] in Open Files' })
+
+      -- Searching by grep disables regex
+      vim.keymap.set('n', '<leader>sg', function()
+        builtin.live_grep {
+          -- Disable regex in search
+          vimgrep_arguments = table.insert(require('telescope.config').values.vimgrep_arguments, '--fixed-strings'),
+        }
+      end, { desc = '[S]earch by [G]rep' })
 
       -- Shortcut for searching your Neovim configuration files
       vim.keymap.set('n', '<leader>sn', function()
@@ -1147,7 +1154,7 @@ require('lazy').setup({
       -- Setup ufo
       require('ufo').setup {
         provider_selector = function(bufnr, filetype, buftype)
-          return { 'lsp', 'indent' } -- ✅ only two allowed
+          return { 'lsp', 'indent' }
         end,
       }
 
