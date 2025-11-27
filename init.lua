@@ -477,13 +477,23 @@ require('lazy').setup({
           ['ui-select'] = {
             require('telescope.themes').get_dropdown(),
           },
+          -- include hiden and ignored files (except node_modules) in <leader>so search
+          live_grep_args = {
+            vimgrep_arguments = (function()
+              local defaults = require('telescope.config').values.vimgrep_arguments
+              local args = { unpack(defaults) }
+
+              table.insert(args, '--hidden')
+              table.insert(args, '--no-ignore')
+              table.insert(args, '--glob=!node_modules/**')
+
+              return args
+            end)(),
+          },
         },
       }
 
-      -- Disable regex in search
-      -- require('telescope.builtin').live_grep {
-      --   vimgrep_arguments = table.insert(require('telescope.config').values.vimgrep_arguments, '--fixed-strings'),
-      -- }
+      require('telescope').load_extension 'live_grep_args'
 
       -- Enable Telescope extensions if they are installed
       pcall(require('telescope').load_extension, 'fzf')
@@ -498,7 +508,12 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader><leader>', builtin.find_files, { desc = 'Search Files' })
       vim.keymap.set('n', '<leader>ss', builtin.builtin, { desc = '[S]earch [S]elect Telescope' })
       vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
-      -- vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
+      vim.keymap.set(
+        'n',
+        '<leader>so',
+        ":lua require('telescope').extensions.live_grep_args.live_grep_args()<CR>",
+        { desc = '[S]earch by Grep With [O]ptions' }
+      )
       vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
       vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
       vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
@@ -522,11 +537,16 @@ require('lazy').setup({
         }
       end, { desc = '[S]earch [/] in Open Files' })
 
-      -- Searching by grep disables regex
+      -- Searching by grep with disabled regex, includes hidden and ignored files (except node_modules)
       vim.keymap.set('n', '<leader>sg', function()
-        builtin.live_grep {
-          -- Disable regex in search
-          vimgrep_arguments = table.insert(require('telescope.config').values.vimgrep_arguments, '--fixed-strings'),
+        local telescope_config = require('telescope.config').values
+        local args = { unpack(telescope_config.vimgrep_arguments) }
+        table.insert(args, '--fixed-strings')
+        table.insert(args, '--hidden') -- search hidden files
+        table.insert(args, '--no-ignore') -- ignore .gitignore
+        table.insert(args, '--glob=!node_modules/**') -- re-exclude node_modules
+        require('telescope.builtin').live_grep {
+          vimgrep_arguments = args,
         }
       end, { desc = '[S]earch by [G]rep' })
 
@@ -1042,6 +1062,8 @@ require('lazy').setup({
 
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
+    branch = 'master',
+    lazy = false,
     build = ':TSUpdate',
     main = 'nvim-treesitter.configs', -- Sets main module to use for opts
     -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
@@ -1180,16 +1202,16 @@ require('lazy').setup({
     end,
   },
 
-    -- Flash, navigate by search quickly
+  -- Flash, navigate by search quickly
   {
     'folke/flash.nvim',
     event = 'VeryLazy',
     opts = {},
-    config = function ()
+    config = function()
       vim.keymap.set('n', '<leader>ls', require('flash').jump, { desc = 'Flash Jump' })
       vim.keymap.set('n', '<leader>lt', require('flash').treesitter, { desc = 'Flash Treesitter' })
       vim.keymap.set('n', '<leader>lr', require('flash').treesitter_search, { desc = 'Flash Treesitter Search' })
-    end
+    end,
     -- keys = {
     --   {
     --     's',
