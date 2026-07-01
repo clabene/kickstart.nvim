@@ -486,6 +486,7 @@ require('lazy').setup({
               table.insert(args, '--hidden')
               table.insert(args, '--no-ignore')
               table.insert(args, '--glob=!node_modules/')
+              table.insert(args, '--glob=!.yarn/')
               -- NOTE: use 'node_modules/**' to only skip node_modules as root dir
 
               return args
@@ -547,6 +548,9 @@ require('lazy').setup({
         table.insert(args, '--no-ignore') -- ignore .gitignore
         -- NOTE: use 'dir/**' to only skip files inside a root dir (will NOT skip files like 'dir.ts' or 'asd/dir/bar.txt')
         table.insert(args, '--glob=!node_modules/')
+        table.insert(args, '--glob=!.git/')
+        table.insert(args, '--glob=!.next/')
+        table.insert(args, '--glob=!.yarn/')
         table.insert(args, '--glob=!coverage/')
         table.insert(args, '--glob=!build/')
         table.insert(args, '--glob=!dist/')
@@ -555,6 +559,7 @@ require('lazy').setup({
         table.insert(args, '--glob=!__snapshots__/')
         table.insert(args, '--glob=!junit.xml')
         table.insert(args, '--glob=!package-lock.json')
+        table.insert(args, '--glob=!yarn.lock')
         require('telescope.builtin').live_grep {
           vimgrep_arguments = args,
         }
